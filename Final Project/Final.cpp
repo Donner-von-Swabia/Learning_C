@@ -13,10 +13,11 @@ class Guest{
         bool Is_Special_Request;
         string Special_Request;
 };
-// Part of WIP was going to join another array that holds the each server for each table this filling in the bottom line in each cell
+// Part of WIP to put a particlur server in a dinning room
 class Server{
-    string Server_Name;
-    int Num_of_tables;
+    public:
+        string Server_Name;
+        int Dinning_Room;
 
 };
 // I have no idea how to procedually iterate class iterations thus I only used 5...
@@ -25,6 +26,10 @@ Guest Guest2;
 Guest Guest3;
 Guest Guest4;
 Guest Guest5;
+Server ServerA;
+Server ServerB;
+Server ServerC;
+
 
 // Array used to buld table
 int tables[72] = {
@@ -80,6 +85,7 @@ if there isn't a table, capacity, or status 0 is used since an array has to be m
 the layout is to look like a table 12 by 6 with 5 x 3 cells
 */
     int loader = 0;
+    int temp = 0;
     // Used to count each cell
     for (int i=0; i<6; i++)
     // Used to get 6 rows
@@ -139,30 +145,58 @@ the layout is to look like a table 12 by 6 with 5 x 3 cells
         cout << endl;
         loader = loader - 12;
         for (int j=0;j<12;j++)
-        // Same as before but the bottom line in the cell where there is no data besides 5 spaces.
+        // Same as before but the data for the bottom cames from the server class
         {
             if(tables[loader]==0){
                 cout <<"\033[0m" << "\033[4m" <<"|     " ;
             }
-            else{
-                if (stat[loader] == 1){
-                    cout <<"\033[30;44m" << "|     " ;
+            else
+            {// Uses if statements to see which dinning room the table is in
+                if (tables[loader]<200){
+                    if (stat[loader] == 1){
+                        cout <<"\033[30;44m" << "| " << ServerA.Server_Name << " ";
+                    }
+                    else if(stat[loader]==2){
+                        cout <<"\033[30;43m" << "| " << ServerA.Server_Name << " ";
+                    }
+                    else{
+                        cout <<"\033[30;42m" << "| " << ServerA.Server_Name << " ";
+                    }}
+                else if (tables[loader] > 300)
+                {
+                    if (stat[loader] == 1){
+                        cout <<"\033[30;44m" << "| " << ServerC.Server_Name << " ";
+                    }
+                    else if(stat[loader]==2){
+                        cout <<"\033[30;43m" << "| " << ServerC.Server_Name << " ";
+                    }
+                    else{
+                        cout <<"\033[30;42m" << "| " << ServerC.Server_Name << " ";
+                    }
                 }
-                else if(stat[loader]==2){
-                    cout <<"\033[30;43m" << "|     " ;
-                }
-                else{
-                    cout <<"\033[30;42m" << "|     " ;
+                else
+                {
+                    if (stat[loader] == 1){
+                        cout <<"\033[30;44m" << "| " << ServerB.Server_Name << " ";
+                    }
+                    else if(stat[loader]==2){
+                        cout <<"\033[30;43m" << "| " << ServerB.Server_Name << " ";
+                    }
+                    else{
+                        cout <<"\033[30;42m" << "| " << ServerB.Server_Name << " ";
+                    }
                 }
             }
-            loader++;
             
+            loader++;
         }
         cout <<"|" <<"\033[0m" ;
-        cout << endl;
-        // Notice no loader=loader-12 as it needs to go to the next cell rather than repeating first row.
+        cout << endl;  
     }
+        
+        // Notice no loader=loader-12 as it needs to go to the next cell rather than repeating first row.
 }
+
 int findnum(int num)
 // Comparies the table array data to the number being selected then returns the id for use in finding the status of the table.
 {
@@ -212,7 +246,7 @@ int options(){
     }
     cout << "\t\t Please Select an option from the Menu" << endl;
     cout <<"1:Seat a party\t 2: Mark or Clear\t 3: Add party to wait\t 4: Wait List" << endl;
-    cout <<"5: Edit Tables\t 6: Guide\t 7: Exit Program" << endl;
+    cout <<"5: Add Server\t 6: Exit Program" << endl;
     int mode;
     cin >> mode;
     return mode;
@@ -426,6 +460,40 @@ void Guest5_Edit(){
         cin >> Guest5.Special_Request;
     }
 }
+void as1(){
+    cout <<"Enter the 3 Initials of the server for slot 1: ";
+    cin >> ServerA.Server_Name;
+}
+void as2(){
+    cout <<"Enter the 3 Initials of the server for slot 2: ";
+    cin >> ServerB.Server_Name;
+}
+void as3(){
+    cout <<"Enter the 3 Initials of the server for slot 3: ";
+    cin >> ServerC.Server_Name;
+}
+void Assign_S(){
+    clear_screen();
+    int slot;
+    cout <<"Select Server Slot" << endl;
+    cout <<"Slot 1: " << ServerA.Server_Name <<"\t Dinning Room: "<< ServerA.Dinning_Room << endl;
+    cout <<"Slot 2: " << ServerB.Server_Name <<"\t Dinning Room: "<< ServerB.Dinning_Room << endl;
+    cout <<"Slot 3: " << ServerC.Server_Name <<"\t Dinning Room: "<< ServerC.Dinning_Room << endl;
+    cout <<"Enter Slot: ";
+    cin >> slot;
+    switch(slot){
+        case 1:
+            as1();
+            break;
+        case 2:
+            as2();
+            break;
+        case 3:
+            as3();
+            break;
+    }
+}
+
 void commands(){
     // Main Function : Allows users to perform different operations
     int mode;
@@ -479,12 +547,11 @@ void commands(){
                 Waitlists();
                 break;
             case 5:
-                cout << "WIP";
+                Assign_S();
+                clear_screen();
+                redraw();
                 break;
-            case 6:
-                cout <<"WIP";
-                break;
-            case 7: 
+            case 6: 
                 // Exit the program
                 condiction = false;
                 clear_screen();
@@ -517,6 +584,12 @@ main(){
     Guest5.Party_Size = 0;
     Guest5.Is_Special_Request = false;
     Guest5.Special_Request = "N/A";
+    ServerA.Dinning_Room = 1;
+    ServerA.Server_Name = "JAN";
+    ServerB.Server_Name = "SLE";
+    ServerC.Server_Name = "DAN";
+    ServerB.Dinning_Room = 2;
+    ServerC.Dinning_Room = 3;
 
     top_line_draw();
     mid_line_draw();
